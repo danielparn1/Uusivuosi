@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lappajärven Uudenvuoden Mökkispektaakkeli 🎆</title>
+  <style>
+    :root{
+      --bg1:#07152b;
+      --bg2:#0c2550;
+      --glass: rgba(255,255,255,0.12);
+      --glass2: rgba(255,255,255,0.18);
+      --stroke: rgba(255,255,255,0.16);
+      --text:#fff;
+      --accent:#ffd54a;
+    }
+    *{ box-sizing: border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background: radial-gradient(circle at top, var(--bg2), var(--bg1) 60%, #040b16);
+      overflow-x:hidden;
+      text-align:center;
+    }
+    #fxCanvas{
+      position:fixed;
+      inset:0;
+      z-index:0;
+      pointer-events:none;
+    }
+    .wrap{
+      position:relative;
+      z-index:1;
+      width:min(1100px, 92%);
+      margin:0 auto;
+      padding: 22px 0 40px;
+    }
+    h1{
+      margin: 14px 0 4px;
+      font-size: clamp(26px, 3.2vw, 44px);
+      letter-spacing: .5px;
+    }
+    .sub{
+      margin: 0 0 14px;
+      opacity:.92;
+    }
+    .topline{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-bottom: 8px;
+      opacity:.95;
+    }
+    .pill{
+      background: rgba(255,255,255,0.10);
+      border:1px solid var(--stroke);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 14px;
+    }
+
+    .section{
+      margin: 16px 0;
+      padding: 16px 14px;
+      background: var(--glass);
+      border:1px solid var(--stroke);
+      border-radius: 18px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.28);
+      backdrop-filter: blur(6px);
+    }
+    .row{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    @media (min-width: 900px){
+      .row{ grid-template-columns: 1fr 1fr; }
+    }
+
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:center;
+      margin-top:10px;
+    }
+    .chip{
+      background: rgba(255,255,255,0.10);
+      border:1px solid var(--stroke);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+
+    .people{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+    .person{
+      background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 12px 10px;
+      transition: transform .15s ease;
+    }
+    .person:hover{ transform: translateY(-3px); }
+    .person img{
+      width: 92px;
+      height: 92px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid rgba(255,255,255,0.9);
+      box-shadow: 0 10px 18px rgba(0,0,0,0.25);
+    }
+    .person p{ margin: 8px 0 0; font-weight: 700; }
+
+    .btns{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:center;
+      margin-top: 10px;
+    }
+    button{
+      background: var(--accent);
+      border:none;
+      padding: 12px 16px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight: 700;
+      box-shadow: 0 12px 18px rgba(0,0,0,0.22);
+    }
+    button:hover{ filter: brightness(0.95); }
+    .muted{
+      opacity:.86;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    /* Winner box */
+    #winner{
+      margin-top: 14px;
+      min-height: 60px;
+      display:flex;
+      gap: 12px;
+      justify-content:center;
+      align-items:center;
+      flex-wrap:wrap;
+      font-size: 20px;
+      color: #ffef7a;
+    }
+    #winner img{
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid rgba(255,255,255,0.9);
+      box-shadow: 0 10px 18px rgba(0,0,0,0.25);
+    }
+
+    /* Game card */
+    .gameCard{
+      margin: 12px auto 0;
+      max-width: 820px;
+      background: var(--glass2);
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 18px;
+      padding: 14px 14px;
+      box-shadow: 0 12px 22px rgba(0,0,0,0.25);
+      text-align:left;
+    }
+    .gameTitle{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom: 8px;
+    }
+    .badge{
+      background: rgba(0,0,0,0.22);
+      border:1px solid rgba(255,255,255,0.14);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      opacity: .95;
+    }
+    .prompt{
+      font-size: 18px;
+      line-height: 1.35;
+      margin: 8px 0 0;
+      text-align:center;
+    }
+    .who{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:10px;
+      margin-top: 10px;
+      font-size: 16px;
+      color: #fff;
+    }
+    .who img{
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255,255,255,0.9);
+    }
+
+    footer{
+      margin-top: 18px;
+      opacity: .82;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="fxCanvas"></canvas>
+
+  <div class="wrap">
+    <h1>🎆 Lappajärven Uudenvuoden Mökkispektaakkeli 🎆</h1>
+    <p class="sub"><strong>31.12 klo 15:00 – 2.1 klo 12:00</strong> • (mökki + porukka = legendat)</p>
+
+    <div class="topline">
+      <div class="pill">🏡 Kohde: Lappajärvi</div>
+      <div class="pill">🔥 Sauna: kyllä</div>
+      <div class="pill">🧡 Yhdessäolo: paljon</div>
+      <div class="pill">✨ Muuta mukavaa: taatusti</div>
+    </div>
+
+    <div class="section">
+      <h2>📌 Ohjelma (eli “mitä ikinä tapahtuukaan”)</h2>
+      <div class="chips">
+        <div class="chip">🔥 Saunomista</div>
+        <div class="chip">🧡 Yhdessäoloa</div>
+        <div class="chip">🎲 Pelejä & höpöttelyä</div>
+        <div class="chip">🍽️ Syömistä</div>
+        <div class="chip">🌌 Iltaulkoilua / tähtitaivas-mode</div>
+        <div class="chip">✨ Kaikkea muuta mukavaa</div>
+      </div>
+      <p class="muted">Varoitus: mökki voi aiheuttaa spontaania naurua, lisääntynyttä hyvää mieltä ja “mennään vielä kerran saunaan” -ilmiötä.</p>
+    </div>
+
+    <div class="section">
+      <h2>🏡 Lähtijät</h2>
+      <div class="people">
+        <div class="person"><img src="miisa.png" alt="Miisa"><p>Miisa</p></div>
+        <div class="person"><img src="daniel.png" alt="Daniel"><p>Daniel</p></div>
+        <div class="person"><img src="joonas.png" alt="Joonas"><p>Joonas</p></div>
+        <div class="person"><img src="joanna.png" alt="Joanna"><p>Joanna</p></div>
+        <div class="person"><img src="fanni.png" alt="Fanni"><p>Fanni</p></div>
+        <div class="person"><img src="kaisla.png" alt="Kaisla"><p>Kaisla</p></div>
+        <div class="person"><img src="elia.png" alt="Elia"><p>Elia</p></div>
+        <div class="person"><img src="natalia.png" alt="Natalia"><p>Natalia</p></div>
+        <div class="person"><img src="jere.png" alt="Jere"><p>Jere</p></div>
+      </div>
+      
+
+    <div class="row">
+      <div class="section">
+        <h2>🍽️ Ruokalista</h2>
+        <p><strong>Uudenvuodenaatto:</strong></p>
+        <p>🍟 Ranskalaiset • 🌭 Nakit • 🧆 Lihapullat • 🥗 Makaroonisalaatti</p>
+
+        <p><strong>Muut herkut:</strong></p>
+        <p>🍕 Pizza • 🌯 Tortillat • 🥞 Lätyt</p>
+
+        <p><strong>Välipalat:</strong></p>
+        <p>🍞 Leipä • 🍊 Mandariinit</p>
+
+        <p class="muted">Pro tip: mandariini on käytännössä “vitamiini-anteeksipyyntö”.</p>
+      </div>
+
+      <div class="section">
+        <h2>🎲 Illan päätähti -arpakone</h2>
+        <p>Paina nappia ja selvitä kuka loistaa eniten ✨</p>
+        <div class="btns">
+          <button id="starBtn" type="button">🎉 Arvo päätähti</button>
+          <button id="starReset" type="button">🧹 Tyhjennä</button>
+        </div>
+        <div id="winner"></div>
+        <p class="muted">Huom: päätähti ei vapauta tiskivuorosta.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>🍻 Juomapeli: “Mökkimoodi”</h2>
+      <p class="sub">Kevyt, leikkimielinen ja täysin vapaaehtoinen. (Voi pelata myös limulla!)</p>
+
+      <div class="btns">
+        <button id="newCard" type="button">🃏 Uusi kortti</button>
+        <button id="newPlayer" type="button">👤 Arvo pelaaja</button>
+        <button id="combo" type="button">🎯 Arvo molemmat</button>
+      </div>
+
+      <div class="gameCard">
+        <div class="gameTitle">
+          <strong>Kortti</strong>
+          <span class="badge" id="cardTag">Valmiina</span>
+        </div>
+        <div class="prompt" id="cardText">Paina “Uusi kortti” ja katsotaan mitä kohtalo tarjoaa.</div>
+        <div class="who" id="playerBox" style="display:none;"></div>
+        <p class="muted" style="text-align:center;margin-bottom:0;">
+          Sääntö: jos joku sanoo “vielä yks”, se on automaattisesti… no, vielä yks.
+        </p>
+      </div>
+    </div>
+
+    <footer>
+      ⚠️ Sivusto tehty hyvällä huumorilla – mökkimuistot eivät ole vastuussa 1.1. aamun “mikä päivä tänään on” -tilasta.
+    </footer>
+  </div>
+
+  <script>
+    // ====== DATA ======
+    const people = [
+      { name: "Miisa", file: "miisa.png" },
+      { name: "Daniel", file: "daniel.png" },
+      { name: "Joonas", file: "joonas.png" },
+      { name: "Joanna", file: "joanna.png" },
+      { name: "Fanni", file: "fanni.png" },
+      { name: "Kaisla", file: "kaisla.png" },
+      { name: "Elia", file: "elia.png" },
+      { name: "Natalia", file: "natalia.png" },
+      { name: "Jere", file: "jere.png" }
+    ];
+
+    // Juomapeli-kortit (pidetään humoristisina mutta helposti pelattavina)
+    const cards = [
+      { tag:"Sauna", text:"Kuka uskaltaa ensimmäisenä saunaan? Jos menit jo: ota “lämmittelyhörppy”." },
+      { tag:"Musiikki", text:"Se, joka laittaa seuraavan biisin, saa päättää genren. Muut: 1 hörppy." },
+      { tag:"Kokkimestari", text:"Kuka valvoo ranskalaisia? Jos sanot “ne on kohta valmiit”, ota 1." },
+      { tag:"Lätty", text:"Kun joku sanoo “lätyt”, kaikki tekee yhden (1) yläfemman ja ottaa 1." },
+      { tag:"Mandariini", text:"Syö mandariini tai ota 1. (Vitamiinit vai vibe?)" },
+      { tag:"Tiskikapina", text:"Jos joku mainitsee tiskivuoron, mainitsija ottaa 1. (Sori.)" },
+      { tag:"Mökkisanakirja", text:"Seuraavat 5 min: sana “mökki” on kielletty. Rikkeestä 1." },
+      { tag:"Tarina", text:"Kerro lyhyt tarina vuodelta 2024. Jos naurattaa jotakuta: he ottaa 1." },
+      { tag:"Hiljaisuus", text:"Ensimmäinen joka nauraa seuraavan 20 sek aikana: 1." },
+      { tag:"Tortilla", text:"Kuka tekee parhaimman tortilla-kääreen? Koko porukka äänestää. Häviäjä 1." },
+      { tag:"Ilotulite", text:"Kun kuulet sanan “uudenvuosi”, ota 1 ja toivota jollekulle hyvää vuotta." },
+      { tag:"Pizza", text:"Se, joka syö viimeisen palan, saa “kuninkaan kruunun”. Kruunulle 1." }
+    ];
+
+    // ====== HELPERS ======
+    const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+    // ====== STAR MACHINE ======
+    const winnerEl = document.getElementById("winner");
+    const starBtn = document.getElementById("starBtn");
+    const starReset = document.getElementById("starReset");
+
+    function arvoTahti(){
+      const w = pick(people);
+      winnerEl.innerHTML = `
+        <img src="${w.file}" alt="${w.name}">
+        🌟 Illan päätähti on: <strong>${w.name}</strong> 🌟
+      `;
+      winnerEl.animate(
+        [{transform:"scale(1)"},{transform:"scale(1.06)"},{transform:"scale(1)"}],
+        {duration: 450, easing:"ease-out"}
+      );
+      burstFX(90);
+    }
+
+    starBtn.addEventListener("click", arvoTahti);
+    starReset.addEventListener("click", () => winnerEl.innerHTML = "");
+
+    // ====== DRINKING GAME ======
+    const cardTag = document.getElementById("cardTag");
+    const cardText = document.getElementById("cardText");
+    const playerBox = document.getElementById("playerBox");
+
+    function newCard(){
+      const c = pick(cards);
+      cardTag.textContent = c.tag;
+      cardText.textContent = c.text;
+      burstFX(55);
+    }
+
+    function newPlayer(){
+      const p = pick(people);
+      playerBox.style.display = "flex";
+      playerBox.innerHTML = `
+        <img src="${p.file}" alt="${p.name}">
+        <div>🎯 Pelaaja: <strong>${p.name}</strong></div>
+      `;
+      playerBox.animate(
+        [{transform:"translateY(0)"},{transform:"translateY(-2px)"},{transform:"translateY(0)"}],
+        {duration: 350, easing:"ease-out"}
+      );
+    }
+
+    document.getElementById("newCard").addEventListener("click", newCard);
+    document.getElementById("newPlayer").addEventListener("click", newPlayer);
+    document.getElementById("combo").addEventListener("click", () => { newCard(); newPlayer(); });
+
+    // ====== CANVAS FX (confetti/flare) ======
+    const canvas = document.getElementById("fxCanvas");
+    const ctx = canvas.getContext("2d");
+    let W, H;
+    const particles = [];
+
+    function resize(){
+      W = canvas.width = window.innerWidth * devicePixelRatio;
+      H = canvas.height = window.innerHeight * devicePixelRatio;
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    function burstFX(count=60){
+      // spawn from top center-ish
+      const x0 = (window.innerWidth * (0.35 + Math.random()*0.3)) * devicePixelRatio;
+      const y0 = (window.innerHeight * 0.18) * devicePixelRatio;
+
+      for(let i=0;i<count;i++){
+        const angle = Math.random()*Math.PI*2;
+        const speed = (2 + Math.random()*6) * devicePixelRatio;
+        particles.push({
+          x: x0,
+          y: y0,
+          vx: Math.cos(angle)*speed,
+          vy: Math.sin(angle)*speed - (4*devicePixelRatio),
+          g: (0.18 + Math.random()*0.22) * devicePixelRatio,
+          life: 80 + Math.floor(Math.random()*60),
+          size: (2 + Math.random()*4) * devicePixelRatio,
+          rot: Math.random()*Math.PI,
+          vr: (Math.random()-0.5)*0.2
+        });
+      }
+    }
+
+    // ambient sparkles occasionally
+    setInterval(() => {
+      if (document.visibilityState === "visible") burstFX(10);
+    }, 2000);
+
+    function tick(){
+      ctx.clearRect(0,0,W,H);
+
+      for(let i=particles.length-1;i>=0;i--){
+        const p = particles[i];
+        p.life--;
+        p.vy += p.g;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+
+        const alpha = Math.max(0, Math.min(1, p.life/120));
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+
+        // No fixed colors requested => use random-ish grayscale sparkle
+        // (keeps it tasteful + avoids hardcoded palette)
+        const shade = 200 + Math.floor(Math.random()*55);
+        ctx.fillStyle = `rgba(${shade},${shade},${shade},${alpha})`;
+        ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+
+        ctx.restore();
+
+        if(p.life <= 0 || p.y > H + 50) particles.splice(i,1);
+      }
+
+      requestAnimationFrame(tick);
+    }
+    tick();
+
+    // small burst on load
+    burstFX(80);
+  </script>
+</body>
+</html>
