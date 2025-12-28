@@ -318,16 +318,23 @@
 
   <script>
     // ====== DATA ======
-    const people = [
-      { name: "Miisa", file: "Miisa.png" },
-      { name: "Daniel", file: "Daniel.png" },
-      { name: "Joonas", file: "Joonas.png" },
-      { name: "Joanna", file: "Joanna.png" },
-      { name: "Fanni", file: "Fanni.png" },
-      { name: "Kaisla", file: "Kaisla.png" },
-      { name: "Elia", file: "Elia.png" },
-      { name: "Natalia", file: "Natalia.png" },
-      { name: "Jere", file: "Jere.png" }
+const IMG_BASE = ""; // jos kuvat samassa kansiossa kuin html
+// const IMG_BASE = "images/"; // jos kuvat images-kansiossa
+
+const people = [
+  { name: "Miisa", file: IMG_BASE + "Miisa.png" },
+  { name: "Daniel", file: IMG_BASE + "Daniel.png" },
+  { name: "Joonas", file: IMG_BASE + "Joonas.png" },
+  { name: "Joanna", file: IMG_BASE + "Joanna.png" },
+  { name: "Fanni", file: IMG_BASE + "Fanni.png" },
+  { name: "Kaisla", file: IMG_BASE + "Kaisla.png" },
+  { name: "Elia", file: IMG_BASE + "Elia.png" },
+  { name: "Natalia", file: IMG_BASE + "Natalia.png" },
+  { name: "Jere", file: IMG_BASE + "Jere.png" }
+];
+
+
+
     ];
 
     // Juomapeli-kortit (pidetään humoristisina mutta helposti pelattavina)
